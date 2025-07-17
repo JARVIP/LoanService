@@ -43,6 +43,17 @@ sencha app watch
 
 ### 6. Enjoy!
 
+## Seeded User Credentials
+
+- **Requester**
+  - Email: requester@example.com
+  - Password: Requester123!
+
+- **Approver**
+  - Email: approver@example.com
+  - Password: Approver123!
+
+
 ## Notes
 - Make sure Docker containers are running before starting the backend.
 - Ensure you have Sencha Cmd installed and available in your PATH for client commands.
