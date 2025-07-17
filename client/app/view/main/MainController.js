@@ -15,5 +15,17 @@ Ext.define('ClientApp.view.main.MainController', {
         if (choice === 'yes') {
             //
         }
+    },
+
+    onLoginSuccess: function() {
+        // Refresh the main view to show the list page
+        this.getView().showAppropriateView();
+    },
+
+    onLogoutClick: function() {
+        localStorage.removeItem('isLoggedIn');
+        localStorage.removeItem('token'); // if you store JWT
+        localStorage.removeItem('role'); // if you store role
+        this.getView().showAppropriateView();
     }
 });

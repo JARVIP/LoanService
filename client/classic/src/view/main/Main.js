@@ -1,103 +1,83 @@
-/**
- * This class is the main view for the application. It is specified in app.js as the
- * "mainView" property. That setting automatically applies the "viewport"
- * plugin causing this view to become the body element (i.e., the viewport).
- *
- * TODO - Replace this content of this view to suite the needs of your application.
- */
 Ext.define('ClientApp.view.main.Main', {
-    extend: 'Ext.tab.Panel',
+    extend: 'Ext.container.Container',
     xtype: 'app-main',
 
     requires: [
         'Ext.plugin.Viewport',
         'Ext.window.MessageBox',
-
         'ClientApp.view.main.MainController',
         'ClientApp.view.main.MainModel',
-        'ClientApp.view.main.List'
+        'ClientApp.view.login.Login',
+        'ClientApp.view.login.LoginController',
+        'ClientApp.view.login.LoginModel',
+        'ClientApp.view.createLoan.CreateLoan',
+        'ClientApp.view.createLoan.CreateLoanController',
+        'ClientApp.view.createLoan.CreateLoanModel',
+        'ClientApp.view.sentLoans.SentLoans',
+        'ClientApp.view.sentLoans.SentLoansController',
+        'ClientApp.view.sentLoans.SentLoansModel',
+        'ClientApp.view.editLoan.EditLoan',
+        'ClientApp.view.editLoan.EditLoanController',
+        'ClientApp.view.editLoan.EditLoanModel',
+        'ClientApp.config.Api'
     ],
 
     controller: 'main',
     viewModel: 'main',
 
-    ui: 'navigation',
+    layout: 'fit',
 
-    tabBarHeaderPosition: 1,
-    titleRotation: 0,
-    tabRotation: 0,
+    items: [],
 
-    header: {
-        layout: {
-            align: 'stretchmax'
-        },
-        title: {
-            bind: {
-                text: '{name}'
-            },
-            flex: 0
-        },
-        iconCls: 'fa-th-list'
+    initComponent: function() {
+        this.callParent(arguments);
+        this.showAppropriateView();
     },
 
-    tabBar: {
-        flex: 1,
-        layout: {
-            align: 'stretch',
-            overflowHandler: 'none'
-        }
-    },
-
-    responsiveConfig: {
-        tall: {
-            headerPosition: 'top'
-        },
-        wide: {
-            headerPosition: 'left'
-        }
-    },
-
-    defaults: {
-        bodyPadding: 20,
-        tabConfig: {
-            responsiveConfig: {
-                wide: {
-                    iconAlign: 'left',
-                    textAlign: 'left'
-                },
-                tall: {
-                    iconAlign: 'top',
-                    textAlign: 'center',
-                    width: 120
+    showAppropriateView: function() {
+        var isLoggedIn = localStorage.getItem('isLoggedIn') === 'true';
+        var role = localStorage.getItem('role');
+        this.removeAll(true);
+        if (isLoggedIn) {
+            var items = [
+                {
+                    xtype: 'container',
+                    layout: 'hbox',
+                    items: [
+                        { xtype: 'component', flex: 1 },
+                        {
+                            xtype: 'button',
+                            text: 'Logout',
+                            handler: 'onLogoutClick',
+                            margin: '10 10 0 0',
+                            align: 'right'
+                        }
+                    ]
                 }
+            ];
+            if (role === 'client') {
+                items.push({
+                    xtype: 'createloan',
+                    flex: 1
+                });
+            } else if (role === 'manager') {
+                items.push({
+                    xtype: 'sentloans',
+                    flex: 1
+                });
             }
+            this.add({
+                xtype: 'container',
+                layout: {
+                    type: 'vbox',
+                    align: 'stretch'
+                },
+                items: items
+            });
+        } else {
+            this.add({
+                xtype: 'loginpage'
+            });
         }
-    },
-
-    items: [{
-        title: 'Home',
-        iconCls: 'fa-home',
-        // The following grid shares a store with the classic version's grid as well!
-        items: [{
-            xtype: 'mainlist'
-        }]
-    }, {
-        title: 'Users',
-        iconCls: 'fa-user',
-        bind: {
-            html: '{loremIpsum}'
-        }
-    }, {
-        title: 'Groups',
-        iconCls: 'fa-users',
-        bind: {
-            html: '{loremIpsum}'
-        }
-    }, {
-        title: 'Settings',
-        iconCls: 'fa-cog',
-        bind: {
-            html: '{loremIpsum}'
-        }
-    }]
+    }
 });

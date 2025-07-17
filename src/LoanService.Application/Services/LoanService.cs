@@ -52,8 +52,8 @@ public class LoanManagementService : ILoanService
         if (loan == null)
             throw new InvalidOperationException("Loan not found");
             
-        if(loan.Status != LoanStatus.Pending)
-            throw new InvalidOperationException("Loan with status other than pending cannot be edited");
+        if(loan.Status is LoanStatus.Approved or LoanStatus.Rejected)
+            throw new InvalidOperationException($"Loan with status {loan.Status.ToString()} cannot be edited");
             
         _loanMapper.MapEditRequestToEntity(request, loan);
         _repository.Loan.Update(loan);

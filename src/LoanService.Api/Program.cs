@@ -18,9 +18,23 @@ builder.Services.ConfigureApplicationServices();
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddIdentityAndAuthentication(builder.Configuration);
 
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowFrontend",
+        policy => policy
+            .WithOrigins("http://localhost:1841")
+            .AllowAnyHeader()
+            .AllowAnyMethod()
+            .AllowCredentials());
+});
+
+
 builder.Host.UseSerilogLogging(builder.Configuration);
 
 var app = builder.Build();
+
+// Configure the HTTP request pipeline
+app.UseCors("AllowFrontend");
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
